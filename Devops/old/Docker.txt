@@ -1,0 +1,24 @@
+DOCKER - QUICK NOTES
+
+Q: Image vs Container?
+A: Image = read-only template/blueprint (built once).
+   Container = running instance of an image (can be started/stopped/deleted).
+
+Q: Why did you use multi-stage builds?
+A: To keep final image small and secure - build tools/dependencies used to compile the
+   app stay in an early "build stage" and only the final compiled artifact is copied into
+   a lightweight final image. Reduces image size and attack surface.
+
+Q: Container keeps restarting - how do you debug it?
+A: docker logs <container> - check application error.
+   docker inspect <container> - check exit code, restart policy, mounts.
+   docker ps -a - check exit code column (137 = OOM killed, 1 = app error, etc).
+
+Q: CMD vs ENTRYPOINT?
+A: ENTRYPOINT defines the fixed command that always runs.
+   CMD provides default arguments, which can be overridden at runtime.
+   Often used together: ENTRYPOINT ["python","app.py"], CMD ["--port","8080"].
+
+Q: How did you use Docker in your project?
+A: Multi-stage Dockerfiles for FastAPI services and Node.js frontend, pushed to ECR,
+   tagged with commit SHA for traceability, deployed onto EKS via CI/CD pipeline.

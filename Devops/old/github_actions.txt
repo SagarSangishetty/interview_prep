@@ -1,0 +1,22 @@
+GITHUB ACTIONS - QUICK NOTES
+
+Q: Why OIDC instead of storing AWS keys in GitHub?
+A: OIDC lets GitHub Actions request temporary, short-lived AWS credentials directly by
+   trusting GitHub as an identity provider - no long-lived AWS access keys stored as
+   secrets in the repo. More secure, no key rotation needed.
+
+Q: What's a workflow trigger?
+A: The event that starts a workflow - e.g. "on: push" (runs on code push),
+   "on: pull_request" (runs on PR open/update). My pipelines trigger on push to
+   dev/main branches.
+
+Q: My CI/CD pipeline flow?
+A: Feature branch -> PR into dev -> pipeline builds Docker image (multi-stage) -> pushes
+   to ECR (SHA-tagged) -> deploys to EKS dev namespace -> verifies rollout.
+   dev -> main requires manual approval gate (GitHub Environments) before prod deploy.
+
+Q: Real issue - CI couldn't authenticate to cluster?
+A: Cluster used legacy aws-auth ConfigMap (not access entries) for IAM-to-K8s user
+   mapping. CI's IAM role wasn't mapped in it, so kubectl commands from CI failed.
+   Fixed by manually editing the aws-auth ConfigMap to add the CI role. Permanent fix
+   planned: manage it via Terraform (kubernetes_config_map_v1_data) instead of manual edits.

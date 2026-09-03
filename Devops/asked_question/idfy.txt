@@ -1,0 +1,6 @@
+how do you troubleshot Linux server slowness issue on the server commands.
+grok in elk 
+indexing lifecycle in elastic search
+how do you troubleshoot the service slowness issue in Kubernetes.
+p90 p95 
+what is elastic search and its components.

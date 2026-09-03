@@ -1,0 +1,28 @@
+	interview question for shell script
+
+Numeric comparison:
+-eq: Equal
+-ne: Not equal
+-gt: Greater than
+-lt: Less than
+-ge: Greater than or equal to
+-le: Less than or equal to
+
+File Tests:
+You can check for file attributes as well:
+
+-e filename: True if the file exists
+-d filename: True if the directory exists
+-f filename: True if the file is a regular file
+-r filename: True if the file is readable
+-w filename: True if the file is writable
+
+
+Special Variables
+Bash has several special variables, including:
+
+$0: The name of the script.
+$1, $2, ...: The positional parameters (arguments) passed to the script.
+$#: The number of positional parameters.
+"$@": All the positional parameters as a single string.
+"$?": The exit status of the last command executed.

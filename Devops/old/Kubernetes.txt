@@ -1,0 +1,93 @@
+Kubernetes Architecture
+
+Kubernetes architecture consists of two main components:
+1. Control Plane
+2. Worker Node
+
+Control Plane Components:
+
+1. API Server
+- Entry point of the Kubernetes cluster.
+- Validates and authenticates all requests from kubectl or APIs.
+- Stores the desired state in etcd.
+- Communicates with all other Kubernetes components.
+
+2. etcd
+- Distributed key-value database.
+- Stores the entire cluster state and configuration.
+
+3. Controller Manager
+- Watches the cluster state.
+- Ensures the actual state matches the desired state.
+- Creates/updates resources such as ReplicaSets and Pods when required.
+
+4. Scheduler
+- Assigns newly created Pods to the best Worker Node.
+- Makes scheduling decisions based on resource availability, taints/tolerations, affinity rules, etc.
+
+Worker Node Components:
+
+1. Kubelet
+- Node agent running on every worker node.
+- Receives Pod specifications from the API Server.
+- Instructs the container runtime to create and monitor Pods.
+
+2. Container Runtime
+- Runs containers on the worker node.
+- Examples: containerd, CRI-O.
+
+3. kube-proxy
+- Manages networking on the worker node.
+- Maintains Service networking and load balances traffic to Pods.
+
+------------------------------------------------------------------------------------------
+
+Q: What happens when you run "kubectl apply" on a Deployment?
+A: Flow: API server -> etcd -> controller -> scheduler -> kubelet
+   1. kubectl sends manifest to API server, gets validated.
+   2. API server stores desired state in etcd (source of truth).
+   3. Deployment controller creates a ReplicaSet to match desired state.
+   4. ReplicaSet controller creates Pod objects.
+   5. Scheduler finds a suitable node based on resource requests/constraints, binds pod to node.
+   6. Kubelet on that node pulls the image, starts the container, monitors via probes.
+
+Q: Pod stuck in CrashLoopBackOff - how do you debug?
+A: 1. kubectl get pods - confirm status + restart count.
+   2. kubectl describe pod - check Events (probe failures, OOMKilled, resource limits).
+   3. kubectl logs --previous - see why the last instance crashed (app error, missing env var, bad config).
+   Common causes: app crash/bad config, OOMKilled, failed liveness probe, dependency not ready (e.g. DB).
+
+Q: Pod stuck in Pending - how do you debug?
+A: kubectl describe pod -> check Events, usually tells exact reason.
+   Common causes:
+   - Insufficient CPU/memory on all nodes (resource requests too high / node exhausted)
+   - Node selector / affinity doesn't match any node
+   - Taint on nodes with no matching toleration on pod
+   - Not enough nodes yet - cluster autoscaler needs to scale up
+
+Q: ImagePullBackOff - cause and fix?
+A: kubelet couldn't pull the container image.
+   Causes: wrong image name/tag, private registry without imagePullSecret, node can't
+   reach registry (no IAM perms for ECR, or no internet access for Docker Hub).
+   Fix: describe pod for exact error -> verify name/tag -> verify pull secret / IAM/network access.
+
+Q: Liveness probe vs Readiness probe?
+A: Liveness = "is the container alive?" - if it fails, kubelet restarts the container.
+   Readiness = "is the container ready to serve traffic?" - if it fails, pod is removed
+   from Service endpoints (traffic stops routing to it) but container is NOT restarted.
+
+Q: Deployment vs StatefulSet?
+A: Deployment = for stateless apps, pods are interchangeable, no stable identity/storage.
+   StatefulSet = for stateful apps needing stable network identity and persistent storage
+   per pod (e.g. databases), pods created/scaled in order.
+
+Q: ConfigMap vs Secret?
+A: ConfigMap = non-sensitive config data (env vars, config files).
+   Secret = sensitive data (passwords, tokens, keys), base64-encoded (not encrypted by
+   default). In my project, I used External Secrets Operator to sync real secrets from
+   AWS Secrets Manager into K8s Secrets instead of hardcoding them.
+
+Q: How does a Service route traffic to pods?
+A: Service uses label selectors to match pods. It maintains a list of pod IPs
+   (Endpoints) matching the selector and load-balances traffic across them, so pods can
+   be added/removed without changing how clients connect.

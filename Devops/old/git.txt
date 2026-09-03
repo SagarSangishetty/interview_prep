@@ -1,0 +1,22 @@
+GIT / GITHUB - QUICK NOTES
+
+Q: git merge vs git rebase?
+A: Merge combines branches and creates a new merge commit, keeping full history.
+   Rebase moves your commits on top of another branch, creating a linear history (rewrites commit history).
+
+Q: git fetch vs git pull?
+A: Fetch downloads changes from remote but doesn't apply them to your branch.
+   Pull = fetch + merge (applies changes immediately).
+
+Q: How do you resolve a merge conflict?
+A: Git marks conflicting sections in the file with <<<<<<, ======, >>>>>>.
+   Manually edit the file to keep the correct changes, then git add the file and commit.
+
+Q: What is a detached HEAD state?
+A: When you checkout a specific commit instead of a branch. HEAD points directly to that
+   commit, not to a branch. Any new commits made here can be lost unless you create a
+   branch from that point.
+
+Q: My branching strategy (for project)?
+A: feature/* branches -> merge into dev -> dev merges into main.
+   Branch protection + manual approval gate before production deploy.

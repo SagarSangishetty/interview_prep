@@ -1,0 +1,313 @@
+Oracle Database 18c Enterprise Edition Release 18.0.0.0.0 - Production
+
+Interview Question:
+
+CREATE TABLE table_name (
+    column1 datatype constraint,
+    column2 datatype constraint,
+    ...
+    table_constraints
+);
+
+
+explain delete drop and truncate difference.
+Define and give commands for DDL DML DCL and TCL
+
+DDL - Create alter drop and truncate
+DML - Insert Select update delete
+
+DCL - 	GRANT SELECT, INSERT ON employees TO user1;
+	REVOKE INSERT ON employees FROM user1;
+
+Which is faster delete or truncate
+what is Group by and when we use having
+what is constrains
+---In SQL, constraints are rules applied to columns in a table to enforce data integrity and ensure the validity of data in the database
+
+CREATE TABLE employees (
+    emp_id INT NOT NULL,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE users (
+    user_id INT,
+    email VARCHAR(100) UNIQUE
+);
+
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY,
+    order_date DATE
+);
+
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY,
+    dept_id INT,
+    FOREIGN KEY (dept_id) REFERENCES departments(dept_id)
+);
+
+
+what is primary key , unique key , not null.
+
+Characteristics:
+Combines UNIQUE and NOT NULL constraints.
+A table can have only one primary key.
+Automatically creates a unique index on the primary key column(s).
+
+
+Purpose: Ensures that a column cannot have NULL values.
+Characteristics:
+It does not enforce uniqueness.
+Multiple columns in a table can have the NOT NULL constraint.
+
+
+UNIQUE KEY
+Purpose: Ensures that all values in a column (or combination of columns) are unique.
+Characteristics:
+Allows multiple NULL values in the column (depending on the database).
+A table can have multiple unique keys.
+Automatically creates a unique index on the column(s).
+
+
+
+1. DML (Data Manipulation Language):
+DML is used to manipulate or interact with the data within database tables. It includes commands for querying and modifying data.
+
+SELECT: Retrieves data from a table.
+INSERT: Adds new records to a table.
+UPDATE: Modifies existing records in a table.
+DELETE: Removes records from a table.
+
+INSERT INTO employees (name, position, salary) VALUES ('John Doe', 'Manager', 50000);
+SELECT * FROM employees;
+
+--------------------------------------------------
+
+DDL (Data Definition Language):
+DDL is used to define or modify the structure of database objects such as tables, indexes, and schemas. These commands affect the schema or structure of the database rather than the data.
+
+CREATE: Creates a new database object (e.g., table, index).
+ALTER: Modifies an existing database object.
+DROP: Deletes an object from the database.
+TRUNCATE: Removes all records from a table but keeps its structure.
+Example:
+sql
+Copy code
+CREATE TABLE employees (
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    position VARCHAR(50),
+    salary DECIMAL(10, 2)
+);
+
+------------------------------------------------------
+
+joins
+
+inner join
+left join
+right join
+self join
+full outer join / full join
+
+----------------------------------------------------------------
+
+Group by
+
+The GROUP BY clause in SQL is used to arrange identical data into groups. This is particularly useful when you want to aggregate data based on one or more columns. The GROUP BY clause is often used with aggregate functions like SUM, COUNT, AVG, MIN, and MAX to perform calculations on grouped data.
+
+Key Points about GROUP BY:
+Purpose: To group rows that have the same values in specified columns into summary rows.
+
+Aggregate Functions: Commonly used with aggregate functions to compute a single result for each group.
+
+Syntax:
+
+sql
+Copy code
+SELECT column1, aggregate_function(column2)
+FROM table
+WHERE condition
+GROUP BY column1;
+Example Scenario
+Let’s consider a table named sales that records transactions made in a store:
+
+sales:
+
+id	product_name	quantity	price_per_unit	sale_date
+1	Widget A	5	10.00	2024-10-01
+2	Widget B	3	15.00	2024-10-01
+3	Widget A	2	10.00	2024-10-02
+4	Widget B	1	15.00	2024-10-02
+5	Widget C	4	20.00	2024-10-03
+Example 1: Basic GROUP BY
+Suppose you want to calculate the total quantity sold for each product. You can use the GROUP BY clause to group the results by product_name and then use the SUM function to get the total quantity for each product.
+
+sql
+Copy code
+SELECT product_name, SUM(quantity) AS total_quantity
+FROM sales
+GROUP BY product_name;
+Result Set:
+product_name	total_quantity
+Widget A	7
+Widget B	4
+Widget C	4
+Explanation of Result:
+The query groups the rows in the sales table by the product_name column.
+It sums the quantity for each product and displays the total for each unique product_name.
+Example 2: GROUP BY with HAVING
+The HAVING clause can be used to filter groups after aggregation. For instance, if you want to see only products that sold more than 5 units, you can do the following:
+
+sql
+Copy code
+SELECT product_name, SUM(quantity) AS total_quantity
+FROM sales
+GROUP BY product_name
+HAVING SUM(quantity) > 5;
+Result Set:
+product_name	total_quantity
+Widget A	7
+Explanation of Result:
+After grouping and summing the quantities, the HAVING clause filters the results to only include products with a total quantity greater than 5.
+Example 3: GROUP BY Multiple Columns
+You can also group by multiple columns. For example, if you want to calculate the total sales for each product per day, you can group by both product_name and sale_date.
+
+sql
+Copy code
+SELECT product_name, sale_date, SUM(quantity) AS total_quantity
+FROM sales
+GROUP BY product_name, sale_date
+ORDER BY sale_date;
+Result Set:
+product_name	sale_date	total_quantity
+Widget A	2024-10-01	5
+Widget B	2024-10-01	3
+Widget A	2024-10-02	2
+Widget B	2024-10-02	1
+Widget C	2024-10-03	4
+
+
+--------------------------------------
+
+row_num
+
+In SQL, the ROW_NUMBER() function is used to assign a unique sequential integer to rows within a partition of a result set. This function is part of the SQL window functions and is commonly used to assign a row number to each row in a result set based on the order specified in the ORDER BY clause.
+
+Key Features of ROW_NUMBER()
+Unique Numbering: Each row gets a unique number, starting from 1 for the first row.
+Partitioning: You can partition the result set into subsets and apply the row numbering within each partition.
+Ordering: You can specify the order in which the rows are numbered
+
+SELECT id, name, department_id, salary,
+       ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY salary DESC) AS row_num
+FROM employees;
+
+
+id	name	department_id	salary	row_num
+4	Bob Johnson	2	80000	1
+2	Jane Smith	2	75000	2
+1	John Doe	1	60000	1
+3	Alice Brown	1	50000	2
+5	Charlie Day	3	45000	1
+
+
+
+WITH RankedSalaries AS (
+    SELECT salary, ROW_NUMBER() OVER (ORDER BY salary DESC) AS row_num
+    FROM employees
+)
+SELECT salary
+FROM RankedSalaries
+WHERE row_num = 3;
+
+Select salary as e1.fifth_highest_salary
+from employes e1,employes e2
+where 
+e1.salary <= e2.salary
+group by e1.salary
+having count(distinct e2.salary)=5;
+
+------------------------------------------------
+
+
+To check blocking_session
+B Lock/ blocking_session
+select sid, serial#, username, module, command, lockwait, osuser from v$session where lockwait is not null;
+select sid, serial#, username, command,sql_id, lockwait, osuser, blocking_session from v$session where blocking_session  is not null;
+session_status:-
+select sid,sql_id,status from v$session where sql_id=4catt7cu91c67;
+
+alter system kill session 'sid, serial#';  ---  To kill session in database
+
+To Kill Sessions live in CISADM:
+BEGIN
+  FOR r IN (select sid,serial# from v$session where username in ('CISUSER','CISADM') AND STATUS='ACTIVE' and OSUSER ='ajdahiya')
+  LOOP
+      EXECUTE IMMEDIATE 'alter system kill session ''' || r.sid  || ',' || r.serial# || '''';
+  END LOOP;
+END;
+
+---------------------------------------------
+
+A stored procedure in Oracle is a reusable PL/SQL code block that performs a specific task. It is stored in the database and can be called multiple times, which helps in reusability, performance improvement, and security by controlling access to certain actions through procedure calls.
+
+CREATE OR REPLACE PROCEDURE procedure_name 
+AS
+BEGIN
+    -- Your PL/SQL statements here
+END;
+/
+
+
+EXEC procedure_name ();
+
+
+------------------------------------------------
+
+Index 
+
+An index in SQL is a database object that improves the speed of data retrieval operations on a table at the cost of additional storage space. An index functions similarly to the index in a book, where you can quickly find information without scanning every page. It is primarily used to enhance the performance of SELECT queries, but it can also help with certain types of JOIN, ORDER BY, and GROUP BY operations.
+
+Too many indexes: While indexes improve read performance, having too many indexes can negatively impact overall database performance.
+
+CREATE INDEX index_name
+ON table_name (column_name);
+
+CREATE INDEX index_name
+ON table_name (column_name);
+
+DROP INDEX index_name;
+
+
+To check indexes ono Table
+SELECT index_name, index_type, uniqueness
+FROM user_indexes
+WHERE table_name = 'EMPLOYEES';
+
+
+Storage overhead: Indexes consume additional disk space.
+Slower INSERT, UPDATE, and DELETE operations: When data is modified, the index must also be updated, which can slow down these operations.
+
+-----------------------------------------------
+
+The SUBSTR function extracts a substring from a string based on position and length.
+
+
+SUBSTR(column_name, start_position, length)
+
+SELECT SUBSTR(name, 1, 5) AS extracted_string
+FROM employees;
+
+column_name: The column containing the string.
+start_position: The starting position (1-based index).
+length: The number of characters to extract.
+
+
+-------------------------
+
+To_char
+SELECT employee_id, TO_CHAR(hire_date, 'DD-MON-YYYY') AS formatted_hire_date
+FROM employees;
+
+
+

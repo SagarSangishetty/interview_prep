@@ -1,0 +1,25 @@
+"The project is called ecommerce-lite — a 3-tier e-commerce application I built end-to-end on AWS to get hands-on with production-grade cloud infrastructure.
+
+The application layer has three FastAPI microservices in Python and a Node.js Express frontend. All of this runs on AWS EKS.
+
+For infrastructure, I used Terraform to provision everything — VPC, the EKS cluster, RDS for PostgreSQL, and IAM roles including IRSA for pod-level permissions. State is stored remotely in S3 with DynamoDB for state locking, so it's safe for repeatable, team-style deployments.
+
+For traffic, I used the AWS Load Balancer Controller so any Kubernetes Ingress automatically provisions an ALB — no manual load balancer setup.
+
+For CI/CD, I built GitHub Actions pipelines with OIDC authentication — so no long-lived AWS credentials are stored in GitHub. Docker images are multi-stage builds pushed to ECR, tagged by commit SHA for traceability, and deployed onto EKS. The branching strategy is feature branches into dev, then dev into main, with a manual approval gate before anything hits production.
+
+For secrets, I used External Secrets Operator with IRSA to sync credentials from AWS Secrets Manager directly into Kubernetes — so there's nothing hardcoded in the app or manifests.
+
+And for observability, I deployed the kube-prometheus-stack — Prometheus, Grafana, Alertmanager — plus an EFK stack for centralized logging, so I could actually monitor and debug the system the way I'd expect to in a real production environment.
+
+I built it this way specifically to hit real production-style problems — and I did. Things like security group misconfigurations, a malformed IAM policy, and a CI authentication gap — the same category of issues I deal with from the support side, but this time I was the one responsible for building and fixing the infrastructure itself."
+
+
+==============================
+
+Application Layer
+Infra Layer (Terraform)
+Load balancer 
+CICD  with OIDC authentication
+Secrets, I used EOS with IRSA.
+Observability

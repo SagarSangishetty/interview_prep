@@ -1,0 +1,60 @@
+"We received a high memory utilization alert from ITRS on the Oracle database server. I verified it using free -h and top -ic, which showed the Oracle process consuming excessive memory. I reviewed the application logs and found ORA errors, documented everything in a ServiceNow incident, and involved the DBA and application teams. The DBA discovered thousands of inactive database sessions because the application was opening database connections but not closing them properly, causing a connection leak and increased Oracle memory usage. As an immediate workaround, the DBA cleared the inactive sessions. We then raised a Problem ticket, the development team fixed the connection handling in the application, deployed the change, and we monitored the environment before closing the incident."
+
+
+### Scenario: High Memory Utilization on Database Server
+
+We received a **High Memory Utilization** alert for the Oracle database server from the ITRS monitoring dashboard.
+
+#### Investigation
+
+* Logged into the database server.
+
+* Verified memory usage using:
+
+  ```bash
+  free -h
+  ```
+
+  The server was consuming a very high amount of memory.
+
+* Checked the running processes using:
+
+  ```bash
+  top -ic
+  ```
+
+  We identified that the **Oracle database process** was consuming most of the memory.
+
+* Reviewed the application logs and noticed Oracle-related (ORA-) errors. Although the exact error code is no longer remembered, the logs indicated database connectivity issues.
+
+#### Actions Taken
+
+* Created a **ServiceNow incident** to document the issue and track all troubleshooting activities.
+* Attached the application logs, ORA error messages, and system observations.
+* Engaged both the **DBA** and **Application Support** teams for further analysis.
+
+#### Root Cause Analysis (RCA)
+
+The DBA investigated the database and found that the application was creating a large number of database connections but was **not closing them properly**.
+
+As a result:
+
+* Many database sessions remained **INACTIVE**.
+* These inactive sessions continued consuming Oracle process memory.
+* Over time, memory utilization on the database server increased significantly, triggering the monitoring alert.
+
+#### Resolution
+
+The DBA terminated the unnecessary inactive sessions, which immediately reduced memory consumption and restored normal database performance.
+
+#### Permanent Fix
+
+A **Problem Ticket** was raised and assigned to the development team.
+
+The development team identified the issue in the application's database connection handling and modified the code to properly close database connections after use (connection leak fix). After testing, the fix was deployed to production.
+
+#### Preventive Action
+
+* Application code was updated to correctly release database connections.
+* Monitoring of inactive Oracle sessions was enhanced.
+* The incident was validated after deployment and successfully closed.

@@ -1,0 +1,17 @@
+About Me : 
+
+I have spent 8+ years in production support working in multiple domains such as Digital examination, Cyber Securities, Utilities & currently I am working with Nusummit technology, supporting NSE's trading infrastructure where I do real-time monitoring with ITRS, own SOD/EOD validation, managing deployments and I've been the sole point of contact from production support during DC/DR drills, IP change activities & other ADHOC activities.
+Mostly, I've been working on infra monitoring and handling production-specific problems. Over time, my interest shifted toward the other side of that — actually provisioning and scaling infrastructure on the cloud, not just monitoring and supporting what's already running.I've been hands-on building a 3-tier e-commerce app on AWS EKS — Terraform, CI/CD, full observability — to get real experience with that side of things."
+
+
+----------------------
+
+About the Project i work on NSE :
+
+We have multiple application backend & frontend application, where backend application are trading related where we disseminate Real time trading data in various levels. (level 1, level 2, level 3 and tick by tick) across segment's Capital Market (CM), Futures & Options (F&O), Currency Derivative (CD) and also Tick By Tick data feed of NSE. It disseminates information about orders and trades on a real time basis.
+Typically this data is disimminated through exchange where over the multicast ip and port we connect to it and further we disiminate to our client through our Points of Presence (POPs). Members connect to these POPs over dedicated leased lines, typically managed by SIFY.
+Also we have frontedn external and internal application which we monitor and provide support in case of any issue here web server used is Apchae Tomcat & Database is Oracle DB.
+
+
+My responsibilities included monitoring the multicast feed infrastructure, troubleshooting data dissemination issues, coordinating with network teams and SIFY for connectivity problems, and ensuring uninterrupted delivery of market data to members.
+	

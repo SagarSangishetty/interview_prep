@@ -1,0 +1,349 @@
+Oracle Linux Server release 7.9
+NAME="Oracle Linux Server"
+VERSION="7.9"
+ID="ol"
+ID_LIKE="fedora"
+VARIANT="Server"
+VARIANT_ID="server"
+VERSION_ID="7.9"
+
+
+
+Interview question
+
+how to list all the process for tomcat
+how do delete directory recursively
+command to create symbolic link.
+
+how to create a tar file.
+tar -cvf archive_name.tar /path/to/files
+tar -cvzf archive_name.tar.gz /path/to/files
+
+tar -xvf archive_name.tar      # For .tar
+tar -xvzf archive_name.tar.gz  # For .tar.gz
+
+
+
+how to gzip a file
+why du is used.
+how would u troubleshoot if du is not working
+
+find /path/to/directory -type f -size +100M
+ls -lhR /path/to/directory
+ls -lhRt | awk '$6 ~ /M/ {print}'
+
+
+
+
+Linux -- 
+
+The free command in Linux is used to display information about the system's memory usage, including how much memory is free, used, and available
+
+free -h: Displays the memory usage in a human-readable format (e.g., MB, GB).
+free -m: Displays memory usage in megabytes.
+free -g: Displays memory usage in gigabytes.
+free -s <seconds>: Continuously updates the memory usage every specified number of
+
+Swap in Linux is a space on the disk that is used as an extension of the system's physical memory (RAM). When the system's RAM is full, it can move inactive or less-used data from RAM to the swap space to free up RAM for active processes.
+
+--------------------------------------------------------------------------
+Chmod 
+
+n symbolic mode, you can add (+), remove (-), or set (=) permissions:
+
+u: User (owner)
+g: Group
+o: Others
+a: All (user, group, others)
+Examples:
+
+chmod u+x file: Adds execute permission to the owner.
+chmod g-w file: Removes write permission from the group.
+chmod o=r file: Sets others' permissions to only read.
+Numeric Mode
+Permissions can also be represented using numbers, where each permission has a value:
+
+Read (r): 4
+Write (w): 2
+Execute (x): 1
+To set permissions using numbers, you sum the values for each group (owner, group, others):
+
+chmod 755 file:
+Owner gets full permissions (7 = 4 + 2 + 1).
+Group and others get read and execute permissions (5 = 4 + 1).
+
+
+Change ownership --- chown user1 example.txt
+Change ownership and group -- chown user1:group1 example.txt
+
+For director use -R option
+
+
+--------------------------------------------------------------------------------
+Grep
+-i: Ignore case (case-insensitive search)
+-v: Invert match (shows lines that do not match the pattern)
+-r or -R: Recursively search directories
+-l: Only show the names of files that contain the matching pattern
+-n: Show line numbers where the match occurs
+-c: Count the number of matching lines
+-w: Match whole words only
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------
+To redirect output
+nohup ./long_running_script.sh > output.log 2>&1 &
+
+The process will ignore the SIGHUP signal (hang up), ensuring it continues running.
+The output will be written to nohup.out unless explicitly redirected.
+nohup is often combined with & to run the process in the background.
+Useful when working over SSH sessions or when you want to close your terminal but keep a task running.
+
+---------------------------------------------------------------------------
+
+Stdout and STDerror
+
+Stdout is out/result of the command which is executed.
+
+File Descriptor: 1
+Default location is terminal but we can redirect it to files
+$ echo "Hello, World!" > output.txt
+$ echo "Hello, World!" 1> output.txt
+
+STDerror will capture the error message for the command which is executed.
+
+File Descriptor: 2
+$ echo "Hello, World!" 2> output.txt
+
+Both Stderror and Stdout in same file
+
+$exho "Hello, World" > output.txt 2>&1>
+
+Both Stderror and Stdout in separate file
+
+$ ls existing_file non_existing_file > output.txt 2> error.txt
+
+-----------------------------------------------------------------------------
+
+Kill
+
+Terminate All Processes by Name: You can use pkill to terminate all processes by name. For example, to kill all instances of my_process:
+
+pkill my_process
+
+-9: Send the SIGKILL signal, which forcibly terminates the process without cleanup. This is used when a process does not respond to a regular termination signal.
+
+-15: Send the SIGTERM signal, which is the default signal for kill. It asks the process to terminate gracefully. (Kill).
+
+-----------------------------------------------------------------------------
+
+Find Command 
+
+find /prod/echanges/ -type f \( ! -name "*.gz" -a ! -name "*.CTL*" -a ! -name "1.log" \) -mtime +7 -exec gzip "{}" \;
+
+find /path/to/search -size +100M -exec ls -lh {} \;
+-size <n>[c|k|M|G]: Search for files of a specific size.
+<n>: size value.
+c: bytes
+k: kilobytes
+M: megabytes
+G: gigabytes
+-mtime -5 : Modified within the last 5 days (less than 5 days old)
+-mtime +5 : Modified more than 5 days ago (older than 5 days)
+find / -type f -size +500M 2>/dev/null --- Find large files
+
+Logical Operators
+
+-a: Logical AND (implied by default).
+-o: Logical OR.
+!: Logical NOT (negation).
+
+Depth and Limits
+
+-maxdepth <n>: Limit the search to n levels deep.
+-mindepth <n>: Start searching at n levels deep.
+-depth: Process each directory's contents before the directory itself.
+
+---------------------------------------------------------------------------------
+
+gzip and tar 
+
+tar will not compress by default but we can combine buy default wit compressing utility
+tar -cvf archive.tar file1 file2 dir1 (-c (create) This flag tells tar to create a new archive. It initiates the process of archiving the specified files and directories.)
+tar -xvf archive.tar --- to extract tar files  (-x: Extract files from the archive. -v: Verbose mode, which lists the files being extracted.
+-f: Specifies the name of the archive file.)
+
+zip -- it compress the file which archiving
+zip archive.zip file1 file2 file3
+unzip archive.zip
+
+-r: Recursively add files from directories.
+-e: Encrypt the archive with a password.
+-u: Update existing entries in the ZIP file.
+-d <dir>: Specify a directory to extract files into.
+-v: Show verbose output during the creation of the archive
+
+To zip files
+gzip archive.tar.gz
+
+To unzip .gz files
+gunzip filename.gz
+
+
+-----------------------------------------------------------------------------
+
+df -h  -- file system
+
+du
+du -h
+du -sh /path/to/directory
+du -h --max-depth=1  --max-depth=N: Limit the depth of directory traversal.
+
+--------------------------------------------------------------
+
+scp file/to/copy user_name@hostip:/destination/to/host/server
+-------------------------------------------------------------------
+
+Networking
+
+ping
+telnet 
+traceroute <hostname or IP address>  -- The traceroute command shows the path packets take to reach a destination, helping to identify where the connection may be failing.
+ip addr show
+nslookup <hostname> These commands help troubleshoot DNS issues.
+
+-----------------------------------------------------------------
+
+awk 
+
+
+The awk command in Linux is a powerful text processing and pattern scanning utility. It is particularly useful for handling structured data, such as columns in a text file or command output. awk allows you to perform various operations like searching, filtering, and transforming data
+
+$0: The entire line.
+$1, $2, ...: The first, second, and subsequent fields in the line.
+NF: The number of fields in the current record.
+NR: The current record number (line number).
+$NF: to print last field. 
+
+-----------------------------------------------------
+
+Cut
+
+The cut command in Linux is a text processing utility that allows you to extract sections from each line of input (such as files or command output). It is particularly useful for processing structured text files, like CSVs or TSVs, where data is organized into columns.
+
+-f: Specifies which fields to extract. Fields are typically separated by a delimiter.
+-d: Defines the delimiter used to separate fields. The default delimiter is the tab character.
+-c: Specifies which characters to extract from each line.
+-s: Suppresses lines that do not contain the delimiter.
+
+ls -l | cut -d' ' -f3
+ls -l | cut -c1-5
+
+-------------------------------------------
+
+The sed command (short for "stream editor") in Linux is a powerful text processing utility used for parsing and transforming text from a file or standard input. It is particularly useful for automating edits to text files and performing complex text transformations
+-e: Allows you to specify multiple editing commands in one sed command.
+-f: Allows you to specify a file that contains sed commands.
+-i: Edits files in place. This means that the original file will be modified directly. (Be cautious with this option.)
+-n: Suppresses automatic printing of pattern space, allowing you to control what is printed with the p command.
+
+
+Substitution: The s command is used for substitution. It has the format:
+s/pattern/replacement/
+You can also use delimiters other than /, such as #, which is helpful for paths.
+Deleting Lines: The 'd' command deletes lines that match a specific pattern.
+
+Printing Lines: The 'p' command can be used to print specific lines or patterns.
+
+Inserting and Appending Text: The 'i' and a commands can insert or append text before or after a specific line.
+
+
+ Substituting Text
+Example: Replace the first occurrence of "apple" with "orange" in a file.
+sed 's/apple/orange/' filename.txt
+
+To replace all occurrences, use the g flag:
+sed 's/apple/orange/g' filename.txt
+
+Example: Replace "apple" with "orange" and save the changes directly to the file.
+sed -i 's/apple/orange/g' filename.txt
+
+Example: Delete lines containing the word "banana".
+sed '/banana/d' filename.txt
+
+Example: Print only lines that match a certain pattern.
+sed -n '/apple/p' filename.txt
+
+Example: Insert a line before the first occurrence of "apple".
+sed '/apple/i This is a new line' filename.txt
+
+Example: Append a line after every occurrence of "apple".
+sed '/apple/a This line is appended' filename.txt
+
+Example: Replace "apple" with "orange" and delete lines containing "banana".
+sed -e 's/apple/orange/g' -e '/banana/d' filename.txt
+
+| Task                  | Command                        |
+| --------------------- | ------------------------------ |
+| Print line 1000       | `sed -n '1000p' file`          |
+| Print lines 1000–1010 | `sed -n '1000,1010p' file`     |
+| Delete line 1000      | `sed -i '1000d' file`          |
+| Replace on line 1000  | `sed -i '1000s/old/new/' file` |
+| Print last line       | `tail -1 file`                 |
+| Print first 10 lines  | `head file`                    |
+| Print last 10 lines   | `tail file`                    |
+
+
+| Task             | Command                      |
+| ---------------- | ---------------------------- |
+| Modify line 10   | `sed -i '10s/old/new/' file` |
+| Modify last line | `sed -i '$s/old/new/' file`  |
+| Delete last line | `sed -i '$d' file`           |
+| Print last line  | `sed -n '$p' file`           |
+
+
+
+
+--------------------------------------------
+
+
+
+0 8-20 * * 1-5 /prod/var/batchops/CMIMPREL_Check/CMIMPREL_Check.sh
+
+MIN (Minute)
+
+Specifies the minute when the command will run
+
+It ranges from 0 to 59.
+
+HOUR
+
+Denotes the hour of the day when the command is scheduled to execute.
+
+It spans from 0 to 23.
+
+DOM (Day of Month)
+
+Specifies the day of the month for the task.
+
+It ranges from 1 to 31.
+
+MON (Month)
+
+Indicates the month during which the command will be executed.
+
+It varies from 1 to 12.
+
+DOW (Day of Week)
+
+Specifies the day of the week for the task.
+
+It is represented by numbers from 0 to 7, where both 0 and 7 correspond to Sunday.
+
+CMD (Command)
+
+Represents the actual command or script that will run at the scheduled time.
+
+
+ 

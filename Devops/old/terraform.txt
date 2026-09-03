@@ -1,0 +1,17 @@
+TERRAFORM - QUICK NOTES (LIGHT PRIORITY)
+
+Q: What is Terraform state?
+A: A file (terraform.tfstate) that maps your config to real-world resources. It's how
+   Terraform knows what already exists so it can calculate what to add/change/destroy.
+   I use remote state in S3 with DynamoDB for state locking, so multiple runs don't
+   corrupt state and it's safe for team use.
+
+Q: terraform plan vs terraform apply?
+A: plan = shows what WILL change (dry run), no actual changes made.
+   apply = actually creates/updates/destroys resources to match the config.
+
+Q: CRD chicken-and-egg problem (if asked)?
+A: kubernetes_manifest provider validates against the live cluster API at plan time -
+   fails if the CRD doesn't exist yet in the same apply. Used kubectl_manifest
+   (gavinbunney/kubectl provider) instead, which doesn't do that validation. Also used a
+   two-pass apply: target the CRD-installing helm_release first, then run a full apply.

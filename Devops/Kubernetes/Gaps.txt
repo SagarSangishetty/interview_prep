@@ -1,0 +1,4 @@
+NetworkPolicy — natural follow-up to "namespaces don't isolate network," and commonly asked.
+CNI / VPC CNI basics for EKS networking — likely if the interviewer probes "how does pod networking work in EKS."
+Init containers / multi-container (sidecar) pattern — common for a "have you used" question.
+PodDisruptionBudget — comes up in "how do you do zero-downtime node upgrades.

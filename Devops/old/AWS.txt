@@ -1,0 +1,35 @@
+AWS - QUICK NOTES
+
+Q: Security Groups vs NACLs?
+A: Security Group = stateful, applied at instance/ENI level, allow rules only
+   (return traffic auto-allowed).
+   NACL = stateless, applied at subnet level, supports allow AND deny rules
+   (return traffic must be explicitly allowed).
+
+Q: IAM Role vs IAM User?
+A: User = long-term credentials for a person/application.
+   Role = temporary credentials assumed by a service/pod/user - no long-term keys stored.
+   IRSA (IAM Roles for Service Accounts) = lets a Kubernetes pod assume an AWS IAM role
+   directly via its service account, so no AWS keys are hardcoded in the pod.
+
+Q: ALB vs NLB?
+A: ALB = Layer 7 (HTTP/HTTPS), supports path/host-based routing, used for web apps.
+   NLB = Layer 4 (TCP/UDP), used for high performance / low latency, static IP needs.
+
+Q: Public vs Private subnet?
+A: Public subnet has a route to an Internet Gateway (directly reachable from internet).
+   Private subnet has no direct route out - uses a NAT Gateway for outbound internet
+   access only. In my project, EKS nodes and RDS sit in private subnets; ALB is in
+   public subnets.
+
+Q: Real issue you faced - RDS connectivity (security group mismatch)?
+A: EKS managed node group launched with AWS's auto-created cluster security group
+   instead of the custom SG I defined in Terraform. My RDS inbound rule only allowed
+   my custom SG, so pods got connection timeouts. Fix: added inbound rule for the
+   actual SG in use. Permanent fix: launch template with explicit vpc_security_group_ids.
+
+Q: Real issue - ALB Controller IAM policy?
+A: ALB and target group got created, but listener rules were missing - page not
+   accessible. Root cause: IAM policy had ARN patterns under "Action" instead of
+   "Resource" (malformed policy), so controller lacked permission to create listener
+   rules. Fixed policy structure, resources recreated, ALB became reachable.

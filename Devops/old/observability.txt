@@ -1,0 +1,25 @@
+OBSERVABILITY - QUICK NOTES
+
+Q: Logs vs Metrics vs Traces?
+A: Logs = discrete event records (what happened, errors, text detail).
+   Metrics = numeric measurements over time (CPU, memory, request rate, error rate) -
+   good for dashboards/alerts.
+   Traces = follow a single request across multiple services - good for finding WHERE
+   in a distributed system the time/error is happening.
+
+Q: Grafana shows a spike in error rate - what do you check first?
+A: Narrow down which service/pod is spiking (Grafana dashboard by service).
+   Then check that pod/service's logs (Kibana/EFK) around that time window for the
+   actual error. Cross-check if it correlates with a recent deployment or config change.
+
+Q: Why EFK stack - what does each piece do?
+A: Fluent Bit = collects/ships logs from pods/nodes.
+   Elasticsearch = stores and indexes the logs for fast search.
+   Kibana = UI to search, filter, and visualize the logs.
+
+Q: My observability setup?
+A: Deployed via Helm into an "observability" namespace:
+   - kube-prometheus-stack: Prometheus (metrics), Grafana (dashboards), Alertmanager (alerts)
+   - EFK stack: Elasticsearch, Fluent Bit, Kibana (centralized logging)
+   - OpenTelemetry + Jaeger for distributed tracing with request-ID correlation across
+     the 3 FastAPI services and Node.js frontend.

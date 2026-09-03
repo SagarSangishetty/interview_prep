@@ -1,0 +1,6 @@
+VPC Endpoints
+VPC Peering
+CloudWatch
+Instance Store
+Elastic IP
+Cost Explorer / cost optimization

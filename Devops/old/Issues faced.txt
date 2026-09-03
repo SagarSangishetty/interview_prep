@@ -1,0 +1,18 @@
+ALB issue.
+
+"I noticed the application wasn't accessible when I tried to hit the URL myself. First, I checked whether the Ingress resource was created — it was, and it had reconciled successfully. Next, I checked the AWS Load Balancer Controller logs using kubectl logs on the controller pod — nothing unusual there. So I went into the AWS console to check the ALB directly. The target group showed healthy targets, but the listener rules were empty — nothing was actually routing traffic.
+
+That pointed me toward the ALB Controller's IAM policy. When I reviewed it, I found the ARN patterns were incorrectly placed under the Action block instead of Resource — which meant the controller didn't have permission to create the listener rules, even though it could create the load balancer and target group itself. I corrected the policy structure, reapplied it, and the controller recreated the missing listener rules. After that, the ALB became fully active and the application was accessible again."
+
+------------------------------------------
+
+RDS/SG issue.
+After deploying the application, the pods were failing to connect to the database — I could see connection timeout errors in the pod logs when I ran kubectl logs on the FastAPI service pods.
+
+My first thought was it might be a database issue — wrong credentials, or the database not being ready. So I checked External Secrets Operator to confirm the DB credentials were syncing correctly from Secrets Manager — that was fine. I also confirmed RDS itself was up and healthy in the AWS console.
+
+Since the app-level basics checked out, I moved to the network layer. I went and checked the security group attached to the RDS instance, and compared it against the security group my EKS nodes were actually using. That's where I found the issue — Terraform had defined a custom security group for the node group, but the EKS managed node group had actually launched with AWS's auto-created cluster security group instead, not the one I'd defined in Terraform. So the security group I'd allowed on the RDS inbound rule wasn't the one the nodes were really attached to — which is why every connection was timing out.
+
+As an immediate fix, I added an inbound rule on the RDS security group for the actual security group the nodes were using, and connectivity was restored right away. For the permanent fix, I noted that this needs an explicit launch template with vpc_security_group_ids set, so the node group always attaches the Terraform-managed security group instead of falling back to the auto-created one — that's still on my list to implement properly rather than relying on the manual SG rule.
+
+--------------------------------------------

@@ -1,0 +1,28 @@
+We received an incident where the NIFTY 50 realtime index feed was not reaching external clients. I verified the issue by checking the application logs and coordinated with the development team for further analysis. The RCA showed that during application initialization, the first packet was unintentionally dropped. Unfortunately, the first packet contained the NIFTY 50 CI packet, so it was never disseminated. As an immediate workaround, we re-disseminated the missing packets to restore the service. For the permanent fix, the development team modified the FCM_ID.DAT processing by inserting a dummy packet at the beginning so that the initialization process discarded the dummy packet instead of the actual market data. After deployment, we monitored the feed, confirmed successful dissemination, and closed the incident."
+
+Scenario 2: CI Packet Missing in CM Realtime Index Feed
+
+Issue:
+- NIFTY 50 CI packet was not disseminated to external clients through the CM Realtime Index Feed application.
+
+Investigation:
+- Verified the issue from application logs.
+- Coordinated with the development team.
+- Compared source packet with outgoing packet.
+
+Root Cause:
+- During application initialization, the first packet was getting dropped.
+- The first packet contained the NIFTY 50 CI packet.
+- As a result, external clients did not receive the NIFTY 50 realtime index data.
+
+Immediate Fix:
+- Re-disseminated the missing CI packets to restore the service.
+
+Permanent Fix:
+- Development team modified the FCM_ID.DAT processing by adding a dummy packet at the beginning.
+- The initialization process discarded the dummy packet instead of the actual NIFTY 50 packet.
+- After deployment, monitored the feed and verified successful packet dissemination.
+
+Learning:
+- Always differentiate between immediate workaround and permanent fix.
+- Validate packet flow after deployment before closing the incident.

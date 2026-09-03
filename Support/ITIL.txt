@@ -1,0 +1,68 @@
+Incident: An unplanned interruption or issue affecting a service that needs to be restored quickly.
+Problem: The underlying root cause of one or more incidents. A Problem ticket is raised when a permanent fix (such as a code change or design improvement) is needed.
+
+-------------------------------------------------
+
+SLA (Service Level Agreement)
+
+An SLA is the agreed target time within which the support team must respond to or resolve an incident, based on its priority
+
+
+SLA 
+
+| Priority          | Severity                                         | Typical Response Time | Typical Resolution Time |
+| ----------------- | ------------------------------------------------ | --------------------: | ----------------------: |
+| **P1 (Critical)** | Complete outage / business-critical service down |         15–30 minutes |               2–4 hours |
+| **P2 (High)**     | Major functionality impacted                     |         30–60 minutes |               4–8 hours |
+| **P3 (Medium)**   | Partial impact / workaround available            |             2–4 hours |       1–3 business days |
+| **P4 (Low)**      | Minor issue / informational / cosmetic           |    4–8 business hours |       3–5 business days |
+
+
+P1: Entire market data dissemination is down; all members are affected.
+P2: One POP is down, but traffic is running through the backup POP.
+P3: A few members are not receiving one multicast stream due to a configuration issue.
+P4: Data correction request, report issue, member-specific query, or a non-urgent database update
+
+-------------------------------
+
+Change Management in NSE (Stangard Artificat) : 
+
+"We didn't use a formal Change Request workflow. Instead, we documented the change using our organization's standard artifact and followed the required approval process before deployment."
+
+If they ask, "What did the change artifact contain?"
+
+You can say:
+
+Change description
+Business justification
+Systems/services impacted
+Implementation plan
+Rollback plan
+Validation/testing steps
+Risk and impact assessment
+Planned maintenance window
+Approvals
+
+------------------------------
+
+Incident Management : 
+
+"We used ServiceNow for incident management. Most of the incidents handled by our team were P4 incidents, which were generally low-impact issues such as data discrepancies, delayed updates, or member-specific problems. Once an incident was assigned to our group, we reviewed it, assigned it to the appropriate engineer, analyzed logs, database records, and application health to identify the cause, and attempted to resolve it within the SLA. If the issue required a permanent code or application fix and couldn't be resolved through operational support, we raised a Problem ticket and coordinated with the development team for a permanent resolution. We also kept the incident updated with our findings, communicated with stakeholders when required, and closed the incident after validation.
+
+If an interviewer asks, "Walk me through an incident you handled," don't just say "I resolved it." Instead, use this sequence:
+
+Received the incident.
+Analyzed logs, database, and application.
+Identified the root cause.
+Implemented a fix or workaround.
+Validated with the user/stakeholders.
+Updated ServiceNow and closed the incident.
+Raised a Problem ticket if a permanent fix was needed.
+
+---------------------------------
+
+CAB (Change Advisory Board) is a group of people who review and approve significant production changes before they are implemented
+
+--------------------------
+
+We were not directly responsible for managing ALM or the overall change management process. That was primarily handled by the NSE client team. Our role was to participate in the change discussions to understand the nature of the change, whether it had any impact on exchange members or was only an internal change, and any operational considerations. Typically, the NSE client provided the Ops sign-off. In their absence, our team could provide the Ops sign-off after reviewing the change documentation. We verified that the SOP was complete, the deployment and rollback steps were clearly documented, validation steps were included, and that there were no undocumented manual activities in the deployment process. Once these operational checks were satisfied, we provided the Ops sign-off.
