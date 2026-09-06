@@ -1,0 +1,10 @@
+When would you choose EC2 / App Service vs EKS for deployment?
+How do you make an application run on a particular node that has a GPU? (I want a specific application to run on a specific GPU.)
+How do you integrate secrets in Kubernetes?
+Pod restrictions / Pod security constraints
+Deployment methods (deployment strategies)
+Terraform:
+How do you guard against drift in Terraform?
+Approval gates how can unapproved deployments be stopped?
+List the reasons for Terraform drift and how to control/prevent it.
+You have an on-prem application that is microservices-based, and you need to migrate these services to the cloud. How will you securely connect to on-prem systems during/after migration?
